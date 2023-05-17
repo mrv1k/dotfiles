@@ -1,5 +1,10 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
+# plugins
+# source ./zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+# HOMEBREW_PREFIX = /opt/homebrew/share/
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -74,16 +79,10 @@ plugins=(
     git
     last-working-dir
     colored-man-pages
-    zsh-autosuggestions
+# non oh my zsh
     zsh-syntax-highlighting
+    zsh-autosuggestions # this plugin reaaally wants to be the last one in the list
 )
-
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"
-
-# export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -95,6 +94,16 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"
 #   export EDITOR='mvim'
 # fi
 
+
+#####
+##### USER CONFIGURATION / vutya config
+#####
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"
+
+# enable CLI autocomplete
+autoload bashcompinit && bashcompinit
+
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
@@ -103,6 +112,7 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 #
+export EDITOR="nvim"
 # Example aliases
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias novim="\vim"
@@ -112,6 +122,13 @@ alias vim="nvim"
 alias v="nvim"
 alias vc="vim ~/.config/nvim"
 
-alias zshc="vim ~/.zshrc"
+alias zc="vim ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+
+
+# m1 PATH
+# export MANPATH="/usr/local/man:$MANPATH"
+export PATH="/opt/homebrew/bin:$PATH"
+
+# SOURCE all the things!11
+source $ZSH/oh-my-zsh.sh
