@@ -1,6 +1,13 @@
 # Vutya styled Mac'n'cheese
 
-STOP. Before you do anything you MUST follow complete these steps
+## other people better set ups
++ http://sourabhbajaj.com/mac-setup/ - OG but very out of date
++ https://www.stuartellis.name/articles/mac-setup/
++ https://www.robinwieruch.de/mac-setup-web-development/
++ https://github.com/alexramirez/mac-setup
+
+## STOP!
+Before you do anything you MUST follow complete these steps
 1. get coconut oil (extra virgin works best)
 2. subscribe to primegean https://www.youtube.com/c/theprimeagen
 3. clone this repo, we'll be symling to the right places as we go
@@ -20,10 +27,21 @@ export PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
 ### dev
 ```
 brew install \
+  git \
   mas \
   nvm \
+  tldr \
+  thefuck
 ```
-o
+
+[Configure github](https://docs.github.com/en/get-started/getting-started-with-git/setting-your-username-in-git)
+```
+brew tap microsoft/git
+```
+```
+brew install --cask git-credential-manager-core
+```
+
 ### mas
 +  Amphetamine
 ```
@@ -54,8 +72,6 @@ brew install --cask \
   maccy \
 ```
 
-
-
 ## non brew :/
 [oh my zsh](https://ohmyz.sh/)
 ```
@@ -65,8 +81,10 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 non oh my zsh plugins
 ```
 brew install \
+  zsh \
   zsh-syntax-highlighting \
-  zsh-autosuggestions
+  zsh-autosuggestions \
+  zsh-completions
 ```
 for more detail 
 + https://github.com/zsh-users/zsh-syntax-highlighting/tree/master
@@ -81,10 +99,3 @@ ln -s code/dotfiles/.zshrc .zshrc
 ```
 TODO: symlink NVIm config
 ```
-
-
-## other people better set ups
-+ http://sourabhbajaj.com/mac-setup/ - OG but very out of date
-+ https://www.stuartellis.name/articles/mac-setup/
-+ https://www.robinwieruch.de/mac-setup-web-development/
-+ https://github.com/alexramirez/mac-setup

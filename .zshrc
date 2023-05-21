@@ -1,13 +1,22 @@
+#                       __ _    
+#                      /_ | |   
+#   _ __ ___  _ ____   _| | | __
+#  | '_ ` _ \| '__\ \ / / | |/ /
+#  | | | | | | |   \ V /| |   < 
+#  |_| |_| |_|_|    \_/ |_|_|\_\
+                              
+
+# https://patorjk.com/software/taag/#p=display&f=Big&t=mrkek
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
-# plugins
-# source ./zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-# HOMEBREW_PREFIX = /opt/homebrew/share/
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+
+# m1 PATH
+# export MANPATH="/usr/local/man:$MANPATH"
+export PATH="/opt/homebrew/bin:$PATH"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -75,14 +84,46 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+# https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins 
 plugins=(
     git
     last-working-dir
     colored-man-pages
-# non oh my zsh
-    zsh-syntax-highlighting
-    zsh-autosuggestions # this plugin reaaally wants to be the last one in the list
+    thefuck # Press ESC twice to correct previous console command.
 )
+# NON OH MY ZSH
+  
+# Brew shell completion
+# https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh 
+
+# /opt/homebrew/Cellar/zsh-syntax-highlighting/0.7.1 (27 files, 164.7KB) *
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/opt/homebrew/share/zsh-syntax-highlighting/highlighters
+# chmod -R go-w '/opt/homebrew/share/zsh'
+
+# /opt/homebrew/Cellar/zsh-completions/0.34.0 (151 files, 1.2MB) *
+# if type brew &>/dev/null; then
+#   FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+
+#   autoload -Uz compinit
+#   compinit
+# fi
+
+
+
+
+# this plugin reaaaaly wants to be the last one 
+# /opt/homebrew/Cellar/zsh-autosuggestions/0.7.0 (6 files, 44.8KB) *
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# Note that if you are using Oh My Zsh, it will call compinit for you when you source oh-my-zsh.sh. 
+FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+
+
+# other misc plugin info
+# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"
+# brew --prefix = /opt/homebrew/share/
+
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -93,12 +134,6 @@ plugins=(
 # else
 #   export EDITOR='mvim'
 # fi
-
-
-#####
-##### USER CONFIGURATION / vutya config
-#####
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"
 
 # enable CLI autocomplete
 autoload bashcompinit && bashcompinit
@@ -123,12 +158,10 @@ alias v="nvim"
 alias vc="vim ~/.config/nvim"
 
 alias zc="vim ~/.zshrc"
+alias re="source ~/.zshrc"
+
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+# eval $(thefuck --alias)
 
 
-# m1 PATH
-# export MANPATH="/usr/local/man:$MANPATH"
-export PATH="/opt/homebrew/bin:$PATH"
-
-# SOURCE all the things!11
 source $ZSH/oh-my-zsh.sh
