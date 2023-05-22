@@ -4,3 +4,4 @@ vim.g.tokyonight_tranparent = true
 vim.opt.background = "dark"
 
 vim.cmd("colorscheme tokyonight")
+-- hello

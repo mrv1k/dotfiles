@@ -155,13 +155,12 @@ alias yesvim="nvim"
 
 alias vim="nvim"
 alias v="nvim"
-alias vc="vim ~/.config/nvim"
+alias nc="vim ~/code/dotfiles/nvim"
 
 alias zc="vim ~/.zshrc"
-alias re="source ~/.zshrc"
+alias rzc="source ~/.zshrc"
 
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-# eval $(thefuck --alias)
+alias code="~/code"
 
 
 source $ZSH/oh-my-zsh.sh

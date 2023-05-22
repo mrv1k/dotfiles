@@ -31,6 +31,7 @@ brew install \
   mas \
   nvm \
   tldr \
+  tree \
   thefuck
 ```
 
@@ -97,5 +98,11 @@ ln -s code/dotfiles/.zshrc .zshrc
 
 ## NeoVim
 ```
-TODO: symlink NVIm config
+# for relative path when inside dotfiles dir
+ln -s $(pwd)/nvim ~/.config/nvim
+# or absolute path
+ln -s ~/code/dotfiles/nvim ~/.config/nvim
+
+git clone --depth 1 https://github.com/wbthomason/packer.nvim\
+ ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 ```
