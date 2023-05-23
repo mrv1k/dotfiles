@@ -1,5 +1,7 @@
-require("mrv1k")
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
 
+require("mrv1k")
 
 -- https://neovim.io/doc/user/lua.html#:~:text=LUA%2DVIMSCRIPT%20BRIDGE
 -- let g:netrw_list_hide= '.DS_Store'

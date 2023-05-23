@@ -28,10 +28,12 @@ export PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
 ```
 brew install \
   git \
+  wget \
   mas \
   nvm \
   tldr \
   tree \
+  ripgrep \
   thefuck
 ```
 
@@ -106,3 +108,9 @@ ln -s ~/code/dotfiles/nvim ~/.config/nvim
 git clone --depth 1 https://github.com/wbthomason/packer.nvim\
  ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 ```
+
+
+## other
+fonts
+install all nerd fonts
+https://gist.github.com/davidteren/898f2dcccd42d9f8680ec69a3a5d350e
