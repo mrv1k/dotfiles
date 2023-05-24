@@ -48,16 +48,19 @@ require('lazy').setup({
     },
 
 
-    {
-        -- Highlight, edit, and navigate code
-        'nvim-treesitter/nvim-treesitter',
-        dependencies = {
-            'nvim-treesitter/nvim-treesitter-textobjects',
-        },
-        build = ':TSUpdate',
-    },
-    "nvim-treesitter/playground",
-    "neovim/nvim-lspconfig",
+    -- {
+    --     'nvim-treesitter/nvim-treesitter',
+    --     dependencies = {
+    --         'nvim-treesitter/nvim-treesitter-textobjects',
+    --     },
+    --     build = ':TSUpdate',
+    -- },
+-- require("lazy").setup()
+    --     -- Highlight, edit, and navigate code
+    {"nvim-treesitter/nvim-treesitter", build = ":TSUpdate"},
+
+    -- "nvim-treesitter/playground",
+    -- "neovim/nvim-lspconfig",
 
     {
         'VonHeikemen/lsp-zero.nvim',
