@@ -33,6 +33,13 @@ export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/opt/homebrew/share/zsh-syntax-highlightin
 # /opt/homebrew/Cellar/zsh-autosuggestions/0.7.0 (6 files, 44.8KB) *
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
+#####
+# nvm
+#####
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 # Note that if you are using Oh My Zsh, it will call compinit for you when you source oh-my-zsh.sh. 
 FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 

@@ -114,3 +114,9 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
 fonts
 install all nerd fonts
 https://gist.github.com/davidteren/898f2dcccd42d9f8680ec69a3a5d350e
+
+## node
+nvm
+```
+cd ~/ && git clone https://github.com/nvm-sh/nvm.git .nvm
+```
