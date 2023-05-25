@@ -69,8 +69,8 @@ require('lazy').setup({
         },
         build = ":TSUpdate", 
         keys = {
-            -- { "<c-space>", desc = "Increment selection" },
-            -- { "<bs>", desc = "Decrement selection", mode = "x" },
+            { "<c-space>", desc = "Increment selection" },
+            { "<bs>", desc = "Decrement selection", mode = "x" },
         },
         opts = {
             highlight = {
@@ -79,6 +79,7 @@ require('lazy').setup({
             },
             indent = { enable = true },
             sync_install = false,
+            auto_install = true,
             ensure_installed = {
                 "bash",
                 "c",
@@ -109,8 +110,24 @@ require('lazy').setup({
             -- },
         },
     },
-
     {
+        -- local lsp = require('lsp-zero').preset('recommended')
+
+
+        -- lsp.ensure_installed({
+        --   'tsserver',
+        -- -- typescript
+        -- })
+
+        -- lsp.on_attach(function(client, bufnr)
+        --   lsp.default_keymaps({buffer = bufnr})
+        -- end)
+
+        -- -- (Optional) Configure lua language server for neovim
+        -- require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
+
+        -- lsp.setup()
+
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v2.x',
         dependencies = {
@@ -127,6 +144,16 @@ require('lazy').setup({
     }
 },
 })
+
+
+-- What's important for lazy loading is that you make sure that
+-- the require is only called when you invoke the keymap, for example:
+-- local set = vim.keymap.set
+---- this require will be evaluated at startup time:
+-- set('n', 'key', require('plugin').function)
+---- this require is only evaluated when invoking the keymap since it's wrapped in a function:
+-- set('n', 'key', function() require('plugin').function() end)
+
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
@@ -157,9 +184,11 @@ vim.keymap.set('n', '<leader>/', function()
 end, { desc = '[/] Fuzzily search in current buffer' })
 
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
-vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+-- vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+vim.keymap.set('n', '<leader>pf', require('telescope.builtin').find_files, { desc = '[P]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 -- vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
+
 

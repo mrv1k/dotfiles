@@ -76,4 +76,5 @@ alias rzc="source ~/.zshrc"
 alias code="~/code"
 
 
+. /opt/homebrew/etc/profile.d/z.sh
 source $ZSH/oh-my-zsh.sh

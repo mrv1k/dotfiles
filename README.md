@@ -34,6 +34,7 @@ brew install \
   tldr \
   tree \
   ripgrep \
+  z \
   thefuck
 ```
 
