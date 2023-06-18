@@ -1,16 +1,23 @@
 # Vutya styled Mac'n'cheese
 
-## other people better set ups
+## better people better mac configs
 + http://sourabhbajaj.com/mac-setup/ - OG but very out of date
 + https://www.stuartellis.name/articles/mac-setup/
 + https://www.robinwieruch.de/mac-setup-web-development/
 + https://github.com/alexramirez/mac-setup
 
-## STOP!
-Before you do anything you MUST follow complete these steps
-1. get coconut oil (extra virgin works best)
-2. subscribe to primegean https://www.youtube.com/c/theprimeagen
-3. clone this repo, we'll be symling to the right places as we go
+## beter people better neovim configs
++ https://github.com/ThePrimeagen/init.lua/tree/master
++ https://github.com/wbthomason/dotfiles/tree/main/dot_config/nvim
++ https://github.com/pynappo/dotfiles/tree/main/.config/nvim
+
+## Mandatory foreplay
+Before you do anything you MUST complete these steps
+1. grab as much coconut oil you can (extra virgin works best)
+2. generously apply oil to yourself (bath tub full of coconut oil recommended (in the lack of forementioned, paint roller can do))
+3. subscribe to prime https://www.youtube.com/c/theprimeagen
+
+now it's safe to proceed
 
 ## [brew](https://brew.sh/)
 first u
