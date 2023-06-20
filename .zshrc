@@ -19,7 +19,17 @@ plugins=(
     git
     last-working-dir
     colored-man-pages
-    thefuck # Press ESC twice to correct previous console command.
+    # tl;dr path aliases
+    #
+    # Easily jump around the file system by manually adding marks
+    # marks are stored as symbolic links in the directory $MARKPATH (default $HOME/.marks)
+    # jump FOO: jump to a mark named FOO
+    # mark FOO: create a mark named FOO
+    # unmark FOO: delete a mark
+    # marks: lists all marks
+    jump 
+    # Press ESC twice to correct previous console command.
+    thefuck
 )
   
 # Brew shell completion
@@ -73,7 +83,10 @@ alias nc="vim ~/code/dotfiles/nvim"
 alias zc="vim ~/.zshrc"
 alias rzc="source ~/.zshrc"
 
-alias code="~/code"
+# alias code="~/code"
+mkcd() {
+  mkdir -p "$1" && cd "$1"
+}
 
 
 . /opt/homebrew/etc/profile.d/z.sh

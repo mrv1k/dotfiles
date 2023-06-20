@@ -1,4 +1,4 @@
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+-- local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
         "git",
@@ -10,6 +10,10 @@ if not vim.loop.fs_stat(lazypath) then
     })
 end
 vim.opt.rtp:prepend(lazypath)
+
+-- lazy-load on keys
+-- mode is `n` by default. For more advanced options, check the section on key mappings
+-- keys = { "<C-a>", { "<C-x>", mode = "n" } },
 
 -- migrate to lazy https://www.youtube.com/watch?v=aqlxqpHs-aQ
 require('lazy').setup({
@@ -31,8 +35,20 @@ require('lazy').setup({
         end,
     },
 
-    -- being good
+    -- PRIME TIME
     "ThePrimeagen/vim-be-good",
+    {
+        "ThePrimeagen/harpoon",
+        keys = {
+            { "<leader>ha", function() require("harpoon.mark").add_file() end, desc = "[h]arpoon [a]dd" },
+            { "<leader>hr", function() require("harpoon.mark").rm_file() end, desc = "[h]arpoon [r]emove" },
+            { "<C-e>", function() require("harpoon.ui").toggle_quick_menu() end },
+            { "<C-h>", function() require("harpoon.ui").nav_file(1) end },
+            { "<C-t>", function() require("harpoon.ui").nav_file(2) end },
+            { "<C-n>", function() require("harpoon.ui").nav_file(3) end },
+            { "<C-s>", function() require("harpoon.ui").nav_file(4) end },
+        },
+    },
 
     -- improve navigation
     "tpope/vim-surround",
@@ -44,7 +60,7 @@ require('lazy').setup({
     'tpope/vim-sleuth',
 
     -- Fuzzy Finder (files, lsp, etc)
-    { 'nvim-telescope/telescope.nvim', tag = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },
+    { 'nvim-telescope/telescope.nvim', dependencies = { 'nvim-lua/plenary.nvim' } },
 
     -- Fuzzy Finder Algorithm which requires local dependencies to be built.
     -- Only load if `make` is available. Make sure you have the system
