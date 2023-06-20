@@ -1,4 +1,4 @@
--- local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
         "git",
@@ -35,18 +35,35 @@ require('lazy').setup({
         end,
     },
 
+    {
+        "folke/which-key.nvim",
+        event = "VeryLazy",
+        init = function()
+            vim.o.timeout = true
+            vim.o.timeoutlen = 269
+        end,
+        -- the rest of the config is at the bottom, mostly just prefix group names
+    },
+
     -- PRIME TIME
     "ThePrimeagen/vim-be-good",
     {
         "ThePrimeagen/harpoon",
+        -- try to keep it close to alphabetical order, that's how it's displayed in which-key
         keys = {
-            { "<leader>ha", function() require("harpoon.mark").add_file() end, desc = "[h]arpoon [a]dd" },
-            { "<leader>hr", function() require("harpoon.mark").rm_file() end, desc = "[h]arpoon [r]emove" },
-            { "<C-e>", function() require("harpoon.ui").toggle_quick_menu() end },
-            { "<C-h>", function() require("harpoon.ui").nav_file(1) end },
-            { "<C-t>", function() require("harpoon.ui").nav_file(2) end },
-            { "<C-n>", function() require("harpoon.ui").nav_file(3) end },
-            { "<C-s>", function() require("harpoon.ui").nav_file(4) end },
+            { "<leader>ht", function() require("harpoon.ui").toggle_quick_menu() end, desc = "[t]oggle quick meny" },
+            { "<C-e>", function() require("harpoon.ui").toggle_quick_menu() end, desc = "toggle harpoon" },
+
+            { "<leader>ha", function() require("harpoon.mark").add_file() end, desc = "[a]dd" },
+            { "<leader>hc", function() require("harpoon.mark").clear_all() end, desc = "[c]lear all" },
+            { "<leader>hn", function() require("harpoon.mark").nav_next() end, desc = "[n]ext" },
+            { "<leader>hp", function() require("harpoon.mark").nav_prev() end, desc = "[p]revious" },
+            { "<leader>hr", function() require("harpoon.mark").rm_file() end, desc = "[r]emove" },
+
+            { "<leader>h1", function() require("harpoon.ui").nav_file(1) end },
+            { "<leader>h2", function() require("harpoon.ui").nav_file(2) end },
+            { "<leader>h3", function() require("harpoon.ui").nav_file(3) end },
+            { "<leader>h4", function() require("harpoon.ui").nav_file(4) end },
         },
     },
 
@@ -160,6 +177,11 @@ require('lazy').setup({
         {'L3MON4D3/LuaSnip'},     -- Required
     }
 },
+})
+
+local wk = require("which-key")
+wk.register({
+    ["<leader>"] = { h = { name = "[h]arpoon" }, },
 })
 
 
