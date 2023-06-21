@@ -9,9 +9,6 @@ vim.g.netrw_liststyle = 3 -- Tree-style view
 -- This setting tells vim whether to display hidden files by default.
 -- vim.g.NERDTreeShowHidden = 0 -- hide hidden files :-/
 
-require("plugins")
-require("keys")
-
 vim.opt.nu = true
 vim.opt.relativenumber = true
 
@@ -24,4 +21,8 @@ vim.opt.incsearch = true
 
 vim.opt.smartindent = true
 vim.opt.wrap = false
+
+
+require("plugins")
+require("keys")
 

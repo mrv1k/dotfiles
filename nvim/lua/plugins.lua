@@ -60,6 +60,7 @@ require('lazy').setup({
             { "<leader>hp", function() require("harpoon.mark").nav_prev() end, desc = "[p]revious" },
             { "<leader>hr", function() require("harpoon.mark").rm_file() end, desc = "[r]emove" },
 
+            -- change this to ctrl-something for blazing fast experience?
             { "<leader>h1", function() require("harpoon.ui").nav_file(1) end },
             { "<leader>h2", function() require("harpoon.ui").nav_file(2) end },
             { "<leader>h3", function() require("harpoon.ui").nav_file(3) end },
@@ -71,10 +72,25 @@ require('lazy').setup({
     "tpope/vim-surround",
     "tpope/vim-commentary",
     -- Git related plugins
-    'tpope/vim-fugitive',
+    {
+        'tpope/vim-fugitive',
+        keys = {
+            {'<leader>gs', '<cmd>Git<CR>', desc = 'git [s]tatus'},
+        }
+
+    },
     'tpope/vim-rhubarb',
     -- Detect tabstop and shiftwidth automatically
     'tpope/vim-sleuth',
+
+    -- ctrl+z on steroids
+    {
+        'mbbill/undotree',
+        keys = {
+            { '<leader>u', '<cmd>UndotreeToggle<CR>', desc = "Toggle undotree" },
+        }
+    },
+
 
     -- Fuzzy Finder (files, lsp, etc)
     { 'nvim-telescope/telescope.nvim', dependencies = { 'nvim-lua/plenary.nvim' } },
@@ -144,39 +160,81 @@ require('lazy').setup({
             -- },
         },
     },
+
+    -- stolen from https://github.com/VonHeikemen/lsp-zero.nvim/blob/v2.x/doc/md/guides/lazy-loading-with-lazy-nvim.md
     {
-        -- local lsp = require('lsp-zero').preset('recommended')
+        {
+            'VonHeikemen/lsp-zero.nvim',
+            branch = 'v2.x',
+            lazy = true,
+            config = function()
+                -- This is where you modify the settings for lsp-zero
+                -- Note: autocompletion settings will not take effect
 
-
-        -- lsp.ensure_installed({
-        --   'tsserver',
-        -- -- typescript
-        -- })
-
-        -- lsp.on_attach(function(client, bufnr)
-        --   lsp.default_keymaps({buffer = bufnr})
-        -- end)
-
-        -- -- (Optional) Configure lua language server for neovim
-        -- require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
-
-        -- lsp.setup()
-
-        'VonHeikemen/lsp-zero.nvim',
-        branch = 'v2.x',
-        dependencies = {
-            -- LSP Support
-            {'neovim/nvim-lspconfig'},             -- Required
-            {'williamboman/mason.nvim', build = function() pcall(vim.cmd, 'MasonUpdate') end, -- Optional
+                require('lsp-zero.settings').preset({})
+            end
         },
-        {'williamboman/mason-lspconfig.nvim'}, -- Optional
 
         -- Autocompletion
-        {'hrsh7th/nvim-cmp'},     -- Required
-        {'hrsh7th/cmp-nvim-lsp'}, -- Required
-        {'L3MON4D3/LuaSnip'},     -- Required
-    }
-},
+        {
+            'hrsh7th/nvim-cmp',
+            event = 'InsertEnter',
+            dependencies = {
+                {'L3MON4D3/LuaSnip'},
+            },
+            config = function()
+                -- Here is where you configure the autocompletion settings.
+                -- The arguments for .extend() have the same shape as `manage_nvim_cmp`: 
+                -- https://github.com/VonHeikemen/lsp-zero.nvim/blob/v2.x/doc/md/api-reference.md#manage_nvim_cmp
+
+                require('lsp-zero.cmp').extend()
+
+                -- And you can configure cmp even more, if you want to.
+                local cmp = require('cmp')
+                local cmp_action = require('lsp-zero.cmp').action()
+
+                cmp.setup({
+                    mapping = {
+                        ['<C-Space>'] = cmp.mapping.complete(),
+                        ['<C-f>'] = cmp_action.luasnip_jump_forward(),
+                        ['<C-b>'] = cmp_action.luasnip_jump_backward(),
+                    }
+                })
+            end
+        },
+
+        -- LSP
+        {
+            'neovim/nvim-lspconfig',
+            cmd = 'LspInfo',
+            event = {'BufReadPre', 'BufNewFile'},
+            dependencies = {
+                {'hrsh7th/cmp-nvim-lsp'},
+                {'williamboman/mason-lspconfig.nvim'},
+                {
+                    'williamboman/mason.nvim',
+                    build = function()
+                        pcall(vim.cmd, 'MasonUpdate')
+                    end,
+                },
+            },
+            config = function()
+                -- This is where all the LSP shenanigans will live
+
+                local lsp = require('lsp-zero')
+
+                lsp.on_attach(function(client, bufnr)
+                    lsp.default_keymaps({buffer = bufnr})
+                end)
+
+                -- (Optional) Configure lua language server for neovim
+                require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
+
+                lsp.setup()
+            end
+        }
+    },
+
 })
 
 local wk = require("which-key")
@@ -197,14 +255,14 @@ wk.register({
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
-  defaults = {
-    mappings = {
-      i = {
-        ['<C-u>'] = false,
-        ['<C-d>'] = false,
-      },
+    defaults = {
+        mappings = {
+            i = {
+                ['<C-u>'] = false,
+                ['<C-d>'] = false,
+            },
+        },
     },
-  },
 }
 
 -- Enable telescope fzf native, if installed
@@ -215,11 +273,11 @@ pcall(require('telescope').load_extension, 'fzf')
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
-  -- You can pass additional configuration to telescope to change theme, layout, etc.
-  require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-    winblend = 10,
-    previewer = false,
-  })
+    -- You can pass additional configuration to telescope to change theme, layout, etc.
+    require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+        winblend = 10,
+        previewer = false,
+    })
 end, { desc = '[/] Fuzzily search in current buffer' })
 
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
