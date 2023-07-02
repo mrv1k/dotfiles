@@ -1,68 +1,65 @@
--- https://github.com/ThePrimeagen/.dotfiles/blob/6a8287fbb400511649da5867dd134074b8ecec52/nvim/.config/nvim/lua/theprimeagen/keymap.lua
+-- initial based on Primegean vim config, do checkout hist YT vim setup tutorial
+-- Use [[ ]] for raw strings, not escaping (instead of "")
+--
+-- To define a mapping which will not be echoed on the command line, add
+-- "<silent>" as the first argument.
+--
+-- https://vim.fandom.com/wiki/Mapping_keys_in_Vim_-_Tutorial_(Part_1)
+-- n  Normal mode map. Defined using ':nmap' or ':nnoremap'.
+-- i  Insert mode map. Defined using ':imap' or ':inoremap'.
+-- v  Visual and select mode map. Defined using ':vmap' or ':vnoremap'.
+-- x  Visual mode map. Defined using ':xmap' or ':xnoremap'.
+-- s  Select mode map. Defined using ':smap' or ':snoremap'.
+-- c  Command-line mode map. Defined using ':cmap' or ':cnoremap'.
+-- o  Operator pending mode map. Defined using ':omap' or ':onoremap'.
 
-local function bind(op, outer_opts)
-    outer_opts = outer_opts or {noremap = true}
-    return function(lhs, rhs, opts)
-        opts = vim.tbl_extend("force",
-            outer_opts,
-            opts or {}
-        )
-        vim.keymap.set(op, lhs, rhs, opts)
-    end
-end
+-- open explorer vs-*bleep* style
+vim.keymap.set("n", "<C-b>", vim.cmd.Ex)
 
-local nmap = bind("n", {noremap = false})
-local nnoremap = bind("n")
-local vnoremap = bind("v")
-local xnoremap = bind("x")
-local inoremap = bind("i")
-
-
-
--- vultured primegean config
-nnoremap("<leader>pv", "<cmd>Ex<CR>")
+-- move line with appropriate indentation
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
 -- [J]oin line without jumping cursor all the way to the right
--- move line
--- vnoremap("J", ":m '>+1<CR>gv=gv")
-vnoremap("K", ":m '<-2<CR>gv=gv")
--- join a line withou a space
-nnoremap("J", "mzJ`z")
+vim.keymap.set("n", "J", "mzJ`z")
 
 -- center when jumping around
-nnoremap("<C-d>", "<C-d>zz")
-nnoremap("<C-u>", "<C-u>zz")
-nnoremap("n", "nzzzv")
-nnoremap("N", "Nzzzv")
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
 
+--There are 9 types of registers:			*registers* *E354*
+-- 1. The unnamed register ""
+-- 2. 10 numbered registers "0 to "9
+-- 3. The small delete register "-
+-- 4. 26 named registers "a to "z or "A to "Z
+-- 5. four read-only registers ":, "., "% and "#
+-- 6. the expression register "=
+-- 7. The selection and drop registers "*, "+ and "~ 
+-- 8. The black hole register "_
+-- 9. Last search pattern register "/ -- useful for capture and replace
 
--- greatest remap ever
-xnoremap("<leader>p", "\"_dP")
+-- TODO: ctrl+d to jump 20 lines
 
--- next greatest remap ever : asbjornHaland
-nnoremap("<leader>y", "\"+y")
-vnoremap("<leader>y", "\"+y")
-nmap("<leader>Y", "\"+Y")
+-- system clipboard
+-- yank
+vim.keymap.set({"n", "v"}, "<leader>y", [["+y]])
+vim.keymap.set("n", "<leader>Y", [["+Y]])
+-- paste
+vim.keymap.set({"n", "v"}, "<leader>pv", [["+p]])
+vim.keymap.set("n", "<leader>Pv", [["+P]])
+vim.keymap.set("n", "<leader>PV", [["+P]])
 
-nnoremap("<leader>d", "\"_d")
-vnoremap("<leader>d", "\"_d")
+-- skip buffer actions
+vim.keymap.set("v", "<leader>p", [["_dP]]) -- paste
+vim.keymap.set({"n", "v"}, "<leader>d", [["_d]]) -- delete
 
+vim.keymap.set("n", ";", ":")
 
+-- " Make navigation with splits easier
+-- nnoremap <silent> <C-h> <C-w>h
+-- nnoremap <silent> <C-j> <C-w>j
+-- nnoremap <silent> <C-k> <C-w>k
+-- nnoremap <silent> <C-l> <C-w>l
 
--- all grown up writing my own config
-nnoremap(";", ":")
-
-nnoremap("c", "\"_c")
-vnoremap("c", "\"_c")
-
-nnoremap("C", "\"_C")
-vnoremap("C", "\"_C")
-
-
---[[
-word word word word word word
-word word word word word word
-word word word word word word
-word word word word word word
-word word word word word word
---]]

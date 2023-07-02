@@ -1,3 +1,13 @@
+-- How to convert plugsin to lazy.nvim
+--
+-- What's important for lazy loading is that you make sure that
+-- the require is only called when you invoke the keymap, for example:
+-- local set = vim.keymap.set
+---- this require will be evaluated at startup time:
+-- set('n', 'key', require('plugin').function)
+---- this require is only evaluated when invoking the keymap since it's wrapped in a function:
+-- set('n', 'key', function() require('plugin').function() end)
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
@@ -51,20 +61,23 @@ require('lazy').setup({
         "ThePrimeagen/harpoon",
         -- try to keep it close to alphabetical order, that's how it's displayed in which-key
         keys = {
-            { "<leader>ht", function() require("harpoon.ui").toggle_quick_menu() end, desc = "[t]oggle quick meny" },
             { "<C-e>", function() require("harpoon.ui").toggle_quick_menu() end, desc = "toggle harpoon" },
+            -- { "<leader>ht", function() require("harpoon.ui").toggle_quick_menu() end, desc = "[t]oggle quick menu" },
 
             { "<leader>ha", function() require("harpoon.mark").add_file() end, desc = "[a]dd" },
-            { "<leader>hc", function() require("harpoon.mark").clear_all() end, desc = "[c]lear all" },
+            { "<leader>hr", function() require("harpoon.mark").rm_file() end, desc = "[r]emove" },
             { "<leader>hn", function() require("harpoon.mark").nav_next() end, desc = "[n]ext" },
             { "<leader>hp", function() require("harpoon.mark").nav_prev() end, desc = "[p]revious" },
-            { "<leader>hr", function() require("harpoon.mark").rm_file() end, desc = "[r]emove" },
+            { "<leader>hc", function() require("harpoon.mark").clear_all() end, desc = "[c]lear all" },
 
-            -- change this to ctrl-something for blazing fast experience?
-            { "<leader>h1", function() require("harpoon.ui").nav_file(1) end },
-            { "<leader>h2", function() require("harpoon.ui").nav_file(2) end },
-            { "<leader>h3", function() require("harpoon.ui").nav_file(3) end },
-            { "<leader>h4", function() require("harpoon.ui").nav_file(4) end },
+            { "<C-h>", function() require("harpoon.ui").nav_file(1) end },
+            { "<C-j>", function() require("harpoon.ui").nav_file(2) end },
+            { "<C-k>", function() require("harpoon.ui").nav_file(3) end },
+            { "<C-l>", function() require("harpoon.ui").nav_file(4) end },
+            { "<leader>h5", function() require("harpoon.ui").nav_file(5) end },
+            { "<leader>h6", function() require("harpoon.ui").nav_file(6) end },
+            { "<leader>h7", function() require("harpoon.ui").nav_file(7) end },
+            { "<leader>h8", function() require("harpoon.ui").nav_file(8) end },
         },
     },
 
@@ -118,10 +131,10 @@ require('lazy').setup({
             -- "nvim-treesitter/playground"
         },
         build = ":TSUpdate", 
-        keys = {
-            { "<c-space>", desc = "Increment selection" },
-            { "<bs>", desc = "Decrement selection", mode = "x" },
-        },
+        -- keys = {
+        --     { "<c-space>", desc = "Increment selection" },
+        --     { "<bs>", desc = "Decrement selection", mode = "x" },
+        -- },
         opts = {
             highlight = {
                 enable = true,
@@ -172,8 +185,8 @@ require('lazy').setup({
                 -- Note: autocompletion settings will not take effect
 
                 require('lsp-zero.settings').preset({})
-            end
-        },
+        end
+    },
 
         -- Autocompletion
         {
@@ -193,9 +206,10 @@ require('lazy').setup({
                 local cmp = require('cmp')
                 local cmp_action = require('lsp-zero.cmp').action()
 
+                -- TODO: figure out what these keys do and add tab for autocomplete 
                 cmp.setup({
                     mapping = {
-                        ['<C-Space>'] = cmp.mapping.complete(),
+                        ['<tab>'] = cmp.mapping.complete(),
                         ['<C-f>'] = cmp_action.luasnip_jump_forward(),
                         ['<C-b>'] = cmp_action.luasnip_jump_backward(),
                     }
@@ -213,15 +227,21 @@ require('lazy').setup({
                 {'williamboman/mason-lspconfig.nvim'},
                 {
                     'williamboman/mason.nvim',
-                    build = function()
-                        pcall(vim.cmd, 'MasonUpdate')
-                    end,
+                    build = ":MasonUpdate" -- :MasonUpdate updates registry contents
                 },
             },
             config = function()
                 -- This is where all the LSP shenanigans will live
+                require('mason').setup({ automatic_installation = true })
 
                 local lsp = require('lsp-zero')
+                lsp.ensure_installed({
+                    'tsserver',
+                    'eslint',
+                    -- 'prettier',
+                    'lua_ls',
+                })
+
 
                 lsp.on_attach(function(client, bufnr)
                     lsp.default_keymaps({buffer = bufnr})
@@ -230,11 +250,14 @@ require('lazy').setup({
                 -- (Optional) Configure lua language server for neovim
                 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
 
+
                 lsp.setup()
             end
         }
     },
-
+    {
+        "williamboman/mason.nvim",
+    }
 })
 
 local wk = require("which-key")
@@ -242,16 +265,8 @@ wk.register({
     ["<leader>"] = { h = { name = "[h]arpoon" }, },
 })
 
-
--- What's important for lazy loading is that you make sure that
--- the require is only called when you invoke the keymap, for example:
--- local set = vim.keymap.set
----- this require will be evaluated at startup time:
--- set('n', 'key', require('plugin').function)
----- this require is only evaluated when invoking the keymap since it's wrapped in a function:
--- set('n', 'key', function() require('plugin').function() end)
-
-
+-- Copypasta as per https://github.com/nvim-lua/kickstart.nvim/blob/master/init.lua
+--
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
