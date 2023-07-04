@@ -28,6 +28,7 @@ vim.opt.hlsearch = true
 vim.opt.incsearch = true
 
 vim.opt.smartindent = true
+vim.opt.smartcase = true
 vim.opt.termguicolors = true
 
 vim.opt.scrolloff = 20
@@ -35,7 +36,7 @@ vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@") -- allow "@" in path, why? dunno but hey Prime does it
 
 vim.opt.updatetime = 50
-vim.opt.colorcolumn = "80"
+vim.opt.colorcolumn = "81"
 
 --
 
@@ -52,24 +53,4 @@ au('TextYankPost', {
 
 require("plugins")
 require("keys")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

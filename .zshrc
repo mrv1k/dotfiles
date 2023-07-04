@@ -21,6 +21,7 @@ plugins=(
     colored-man-pages
     # tl;dr path aliases
     #
+    # temporarily
     # Easily jump around the file system by manually adding marks
     # marks are stored as symbolic links in the directory $MARKPATH (default $HOME/.marks)
     # jump FOO: jump to a mark named FOO
@@ -73,17 +74,22 @@ FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 autoload bashcompinit && bashcompinit
 
 export EDITOR="nvim"
-alias novim="\vim"
-alias yesvim="nvim"
-
 alias vim="nvim"
-alias v="nvim"
+alias vi="nvim"
+
+alias v="nvim ."
+
 alias nc="vim ~/code/dotfiles/nvim"
 
 alias zc="vim ~/.zshrc"
 alias rzc="source ~/.zshrc"
 
-# alias code="~/code"
+alias cdnc="~/code/dotfiles/nvim"
+alias cdcode="~/code"
+alias cddot="~/code/dotfiles"
+alias cddotfiles="~/code/dotfiles"
+
+
 mkcd() {
   mkdir -p "$1" && cd "$1"
 }

@@ -13,6 +13,9 @@
 -- c  Command-line mode map. Defined using ':cmap' or ':cnoremap'.
 -- o  Operator pending mode map. Defined using ':omap' or ':onoremap'.
 
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
 -- open explorer vs-*bleep* style
 vim.keymap.set("n", "<C-b>", vim.cmd.Ex)
 
@@ -55,7 +58,8 @@ vim.keymap.set("n", "<leader>PV", [["+P]])
 vim.keymap.set("v", "<leader>p", [["_dP]]) -- paste
 vim.keymap.set({"n", "v"}, "<leader>d", [["_d]]) -- delete
 
-vim.keymap.set("n", ";", ":")
+-- flash.nvim conflicting with this key
+-- vim.keymap.set("n", ";", ":")
 
 -- " Make navigation with splits easier
 -- nnoremap <silent> <C-h> <C-w>h
