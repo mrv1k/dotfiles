@@ -146,6 +146,14 @@ require('lazy').setup({
         }
 
     },
+    {
+        "lewis6991/gitsigns.nvim",
+        lazy = false, -- make sure we load this during startup if it is your main colorscheme
+        config = function()
+                local gitsigns = require('gitsigns')
+                gitsigns.setup()
+        end
+    },
     'tpope/vim-rhubarb',
     -- Detect tabstop and shiftwidth automatically
     'tpope/vim-sleuth',
@@ -182,13 +190,13 @@ require('lazy').setup({
         version = false, -- last release is way too old and doesn't work on Windows
         dependencies = {
             'nvim-treesitter/nvim-treesitter-textobjects',
-            -- "nvim-treesitter/playground"
+            "nvim-treesitter/playground"
         },
-        build = ":TSUpdate", 
-        -- keys = {
-        --     { "<c-space>", desc = "Increment selection" },
-        --     { "<bs>", desc = "Decrement selection", mode = "x" },
-        -- },
+        build = ":TSUpdate",
+        keys = {
+            { "<c-space>", desc = "Increment selection" },
+            { "<bs>", desc = "Decrement selection", mode = "x" },
+        },
         opts = {
             highlight = {
                 enable = true,
@@ -238,7 +246,18 @@ require('lazy').setup({
                 -- This is where you modify the settings for lsp-zero
                 -- Note: autocompletion settings will not take effect
 
-                require('lsp-zero.settings').preset({})
+                -- https://github.com/VonHeikemen/lsp-zero.nvim/blob/v2.x/doc/md/api-reference.md#available-presets
+                require('lsp-zero.settings').preset('recommended')
+                -- default kbs
+                -- <Ctrl-y>: Confirms selection.
+                -- <Ctrl-e>: Cancel the completion.
+                -- <Down>: Navigate to the next item on the list.
+                -- <Up>: Navigate to previous item on the list.
+                -- <Ctrl-n>: Go to the next item in the completion menu, or trigger completion menu.
+                -- <Ctrl-p>: Go to the previous item in the completion menu, or trigger completion menu.
+                -- <Ctrl-d>: Scroll down in the item's documentation.
+                -- <Ctrl-u>: Scroll up in the item's documentation.
+
         end
     },
 
@@ -263,15 +282,29 @@ require('lazy').setup({
                 -- TODO: figure out what these keys do and add tab for autocomplete 
                 cmp.setup({
                     mapping = {
-                        ['<tab>'] = cmp.mapping.complete(),
+                        -- `Enter` key to confirm completion
+                        ['<CR>'] = cmp.mapping.confirm({select = false}),
+
+                        -- Ctrl+Space to trigger completion menu
+                        ['<C-Space>'] = cmp.mapping.complete(),
+
+                        -- Navigate between snippet placeholder
                         ['<C-f>'] = cmp_action.luasnip_jump_forward(),
                         ['<C-b>'] = cmp_action.luasnip_jump_backward(),
+                        -- ['<C-enter>'] = cmp.mapping.complete(),
+                        -- ['<C-f>'] = cmp_action.luasnip_jump_forward(),
+                        -- ['<C-b>'] = cmp_action.luasnip_jump_backward(),
                     }
                 })
             end
         },
 
         -- LSP
+        --
+        {
+            'Shopify/ruby-lsp',
+            name = 'ruby_lsp',
+        },
         {
             'neovim/nvim-lspconfig',
             cmd = 'LspInfo',
@@ -281,7 +314,11 @@ require('lazy').setup({
                 {'williamboman/mason-lspconfig.nvim'},
                 {
                     'williamboman/mason.nvim',
-                    build = ":MasonUpdate" -- :MasonUpdate updates registry contents
+                    -- build = ":MasonUpdate" -- :MasonUpdate updates registry contents
+                    build = function()
+                        require('mason').setup()
+                        -- return vim.fn.executable 'make' == 1
+                    end,
                 },
             },
             config = function()
@@ -291,9 +328,10 @@ require('lazy').setup({
                 local lsp = require('lsp-zero')
                 lsp.ensure_installed({
                     'tsserver',
-                    'eslint',
+                    -- 'eslint',
                     -- 'prettier',
                     'lua_ls',
+                    'ruby_ls'
                 })
 
 
@@ -304,6 +342,54 @@ require('lazy').setup({
                 -- (Optional) Configure lua language server for neovim
                 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
 
+                -- textDocument/diagnostic support until 0.10.0 is released
+                _timers = {}
+                local function setup_diagnostics(client, buffer)
+                    if require("vim.lsp.diagnostic")._enable then
+                        return
+                    end
+
+                    local diagnostic_handler = function()
+                        local params = vim.lsp.util.make_text_document_params(buffer)
+                        client.request("textDocument/diagnostic", { textDocument = params }, function(err, result)
+                            if err then
+                                local err_msg = string.format("diagnostics error - %s", vim.inspect(err))
+                                vim.lsp.log.error(err_msg)
+                            end
+                            local diagnostic_items = {}
+                            if result then
+                                diagnostic_items = result.items
+                            end
+                            vim.lsp.diagnostic.on_publish_diagnostics(
+                            nil,
+                            vim.tbl_extend("keep", params, { diagnostics = diagnostic_items }),
+                            { client_id = client.id }
+                            )
+                        end)
+                    end
+
+                    diagnostic_handler() -- to request diagnostics on buffer when first attaching
+
+                    vim.api.nvim_buf_attach(buffer, false, {
+                        on_lines = function()
+                            if _timers[buffer] then
+                                vim.fn.timer_stop(_timers[buffer])
+                            end
+                            _timers[buffer] = vim.fn.timer_start(200, diagnostic_handler)
+                        end,
+                        on_detach = function()
+                            if _timers[buffer] then
+                                vim.fn.timer_stop(_timers[buffer])
+                            end
+                        end,
+                    })
+                end
+
+                require("lspconfig").ruby_ls.setup({
+                    on_attach = function(client, buffer)
+                        setup_diagnostics(client, buffer)
+                    end,
+                })
 
                 lsp.setup()
             end
@@ -356,5 +442,4 @@ vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 -- vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
-
 

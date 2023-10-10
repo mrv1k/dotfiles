@@ -73,11 +73,19 @@ FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 # enable CLI autocomplete
 autoload bashcompinit && bashcompinit
 
+# languages aliases
+alias python="python3"
+alias py="python3"
+alias rubyrepl="irb"
+alias rb="irb"
+
 export EDITOR="nvim"
 alias vim="nvim"
 alias vi="nvim"
+alias v="nvim"
 
-alias v="nvim ."
+alias vh="nvim ."
+
 
 alias nc="vim ~/code/dotfiles/nvim"
 
@@ -85,6 +93,7 @@ alias zc="vim ~/.zshrc"
 alias rzc="source ~/.zshrc"
 
 alias cdnc="~/code/dotfiles/nvim"
+alias cdc="~/code"
 alias cdcode="~/code"
 alias cddot="~/code/dotfiles"
 alias cddotfiles="~/code/dotfiles"
@@ -97,3 +106,9 @@ mkcd() {
 
 . /opt/homebrew/etc/profile.d/z.sh
 source $ZSH/oh-my-zsh.sh
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
+export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/opt/postgresql@15/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/postgresql@15/include"

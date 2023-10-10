@@ -27,8 +27,9 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set("n", "J", "mzJ`z")
 
 -- center when jumping around
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
+-- just bind it to 20j/k to avoid mucking with % compute 
+vim.keymap.set("n", "<C-d>", "20jzz")
+vim.keymap.set("n", "<C-u>", "20kzz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
@@ -43,8 +44,6 @@ vim.keymap.set("n", "N", "Nzzzv")
 -- 8. The black hole register "_
 -- 9. Last search pattern register "/ -- useful for capture and replace
 
--- TODO: ctrl+d to jump 20 lines
-
 -- system clipboard
 -- yank
 vim.keymap.set({"n", "v"}, "<leader>y", [["+y]])
@@ -57,13 +56,10 @@ vim.keymap.set("n", "<leader>PV", [["+P]])
 -- skip buffer actions
 vim.keymap.set("v", "<leader>p", [["_dP]]) -- paste
 vim.keymap.set({"n", "v"}, "<leader>d", [["_d]]) -- delete
+-- don't yank on change
+vim.keymap.set({"n", "v"}, "c", [["_c]])
+vim.keymap.set({"n", "v"}, "C", [["_C]])
 
 -- flash.nvim conflicting with this key
 -- vim.keymap.set("n", ";", ":")
-
--- " Make navigation with splits easier
--- nnoremap <silent> <C-h> <C-w>h
--- nnoremap <silent> <C-j> <C-w>j
--- nnoremap <silent> <C-k> <C-w>k
--- nnoremap <silent> <C-l> <C-w>l
 
