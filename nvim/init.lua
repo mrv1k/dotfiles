@@ -1,6 +1,7 @@
+-- this file is used for vim configs
+
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
 
 -- https://neovim.io/doc/user/lua.html#:~:text=LUA%2DVIMSCRIPT%20BRIDGE
 -- let g:netrw_list_hide= '.DS_Store'
@@ -52,6 +53,5 @@ au('TextYankPost', {
   end,
 })
 
-require("plugins")
 require("keys")
 

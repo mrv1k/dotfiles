@@ -1,3 +1,5 @@
+-- this is where key remaps go
+
 -- initial based on Primegean vim config, do checkout hist YT vim setup tutorial
 -- Use [[ ]] for raw strings, not escaping (instead of "")
 --
