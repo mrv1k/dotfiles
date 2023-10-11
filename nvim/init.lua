@@ -53,5 +53,6 @@ au('TextYankPost', {
   end,
 })
 
+require("kickstart")
 require("keys")
 
