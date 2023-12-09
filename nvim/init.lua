@@ -1,6 +1,6 @@
 -- One config to rule 'em all
 -- Special thanks to https://www.youtube.com/@ThePrimeagen
--- for helping me jump on the vim wagon 
+-- for helping me jump on the vim wagon
 -- Thanks to TJ for configuring my neovim for me
 -- https://github.com/nvim-lua/kickstart.nvim/tree/master
 
@@ -42,7 +42,7 @@ vim.opt.smartcase = true
 -- NOTE: You should make sure your terminal supports this
 vim.opt.termguicolors = true
 
-vim.opt.scrolloff = 20
+vim.opt.scrolloff = 25
 -- Keep signcolumn on by default
 vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@") -- allow "@" in path, why? dunno but hey Prime does it
@@ -55,7 +55,7 @@ vim.opt.colorcolumn = "81"
 -- Enable break indent
 vim.o.breakindent = true
 -- Set completeopt to have a better completion experience
--- The completion menu is controlled by completeopt. 
+-- The completion menu is controlled by completeopt.
 vim.o.completeopt = 'menuone,noselect'
 
 -- :h lua-high
@@ -65,7 +65,28 @@ au('TextYankPost', {
   group = ag('yank_highlight', {}),
   pattern = '*',
   callback = function()
-    vim.highlight.on_yank { higroup='IncSearch', timeout=100 }
+    vim.highlight.on_yank { higroup = 'IncSearch', timeout = 100 }
+  end,
+})
+
+-- save cursor position
+vim.api.nvim_create_autocmd('BufRead', {
+  callback = function(opts)
+    vim.api.nvim_create_autocmd('BufWinEnter', {
+      once = true,
+      buffer = opts.buf,
+      callback = function()
+        local ft = vim.bo[opts.buf].filetype
+        local last_known_line = vim.api.nvim_buf_get_mark(opts.buf, '"')[1]
+        if
+            not (ft:match('commit') and ft:match('rebase'))
+            and last_known_line > 1
+            and last_known_line <= vim.api.nvim_buf_line_count(opts.buf)
+        then
+          vim.api.nvim_feedkeys([[g`"]], 'nx', false)
+        end
+      end,
+    })
   end,
 })
 
@@ -95,7 +116,71 @@ vim.opt.rtp:prepend(lazypath)
 --  You can also configure plugins after the setup call,
 --    as they will be available in your neovim runtime.
 require('lazy').setup({
-  -- NOTE: First, some plugins that don't require any configuration
+  -- post kickstart plugins START
+  {
+    "kylechui/nvim-surround",
+    version = "*", -- Use for stability; omit to use `main` branch for the latest features
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup()
+    end
+  },
+  {
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    ---@type Flash.Config
+    opts = {},
+    keys = {
+      {
+        "s",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").jump({
+            search = {
+              mode = function(str)
+                return "\\<" .. str
+              end,
+            },
+          })
+        end,
+        desc = "Flash",
+      },
+      {
+        "S",
+        mode = { "n", "o", "x" },
+        function()
+          require("flash").treesitter()
+        end,
+        desc = "Flash Treesitter",
+      },
+      {
+        "r",
+        mode = "o",
+        function()
+          require("flash").remote()
+        end,
+        desc = "Remote Flash",
+      },
+      {
+        "R",
+        mode = { "o", "x" },
+        function()
+          require("flash").treesitter_search()
+        end,
+        desc = "Flash Treesitter Search",
+      },
+      {
+        "<c-s>",
+        mode = { "c" },
+        function()
+          require("flash").toggle()
+        end,
+        desc = "Toggle Flash Search",
+      },
+    },
+  },
+  -- post kickstart plugins END
+
 
   -- Git related plugins
   'tpope/vim-fugitive',
@@ -140,7 +225,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -236,6 +321,8 @@ require('lazy').setup({
     },
   },
 
+  -- HEAD installs of Neovim do not include any tree-sitter parsers.
+  -- You can use the `nvim-treesitter` plugin to install them.
   {
     -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
@@ -322,7 +409,20 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
+    ensure_installed = {
+      'c',
+      'cpp',
+      'go',
+      'lua',
+      'python',
+      'rust',
+      'tsx',
+      'javascript',
+      'typescript',
+      'vimdoc',
+      'vim',
+      'bash',
+    },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = false,
@@ -384,6 +484,7 @@ vim.defer_fn(function()
     },
   }
 end, 0)
+
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
@@ -467,7 +568,14 @@ local servers = {
   -- rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
+  -- 'solargraph',
+  -- 'ruby_ls',
 
+  -- solargraph = {
+  --   solargraph = {
+  --     diagnostics = true
+  --   }
+  -- },
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -582,43 +690,57 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set("n", "J", "mzJ`z")
 
 -- center when jumping around
--- just bind it to 20j/k to avoid mucking with % compute 
+-- just bind it to N j/k to avoid mucking with % compute
+--
+-- KEEP IN SYNC WITH vim.opt.scrolloff
+vim.keymap.set("n", "<C-d>", "25jzz")
+vim.keymap.set("n", "<C-u>", "25kzz")
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+
+-- flash.nvim conflicting with this key
+-- vim.keymap.set("n", ";", ":")
+
+-- open explorer vs-*bleep* style
+vim.keymap.set("n", "<C-b>", vim.cmd.Ex)
+
+-- move line with appropriate indentation
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+
+-- [J]oin line without jumping cursor all the way to the right
+vim.keymap.set("n", "J", "mzJ`z")
+
+-- center when jumping around
+-- just bind it to 20j/k to avoid mucking with % compute
 vim.keymap.set("n", "<C-d>", "20jzz")
 vim.keymap.set("n", "<C-u>", "20kzz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
---There are 9 types of registers:			*registers* *E354*
--- 1. The unnamed register ""
--- 2. 10 numbered registers "0 to "9
--- 3. The small delete register "-
--- 4. 26 named registers "a to "z or "A to "Z
--- 5. four read-only registers ":, "., "% and "#
--- 6. the expression register "=
--- 7. The selection and drop registers "*, "+ and "~ 
--- 8. The black hole register "_
--- 9. Last search pattern register "/ -- useful for capture and replace
-
 -- system clipboard
 -- yank
-vim.keymap.set({"n", "v"}, "<leader>y", [["+y]])
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 -- paste
-vim.keymap.set({"n", "v"}, "<leader>pv", [["+p]])
+vim.keymap.set({ "n", "v" }, "<leader>pv", [["+p]])
 vim.keymap.set("n", "<leader>Pv", [["+P]])
 vim.keymap.set("n", "<leader>PV", [["+P]])
 
--- skip buffer actions
-vim.keymap.set("v", "<leader>p", [["_dP]]) -- paste
-vim.keymap.set({"n", "v"}, "<leader>d", [["_d]]) -- delete
--- don't yank on change
-vim.keymap.set({"n", "v"}, "c", [["_c]])
-vim.keymap.set({"n", "v"}, "C", [["_C]])
+-- skip yanking
+vim.keymap.set("x", "<leader>p", [["_dP]])         -- paste
+vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]]) -- delete
+-- don't yank
+vim.keymap.set({ "n", "v" }, "c", [["_c]])
+vim.keymap.set({ "n", "v" }, "C", [["_C]])
+-- I SAID NO YANKIN
+vim.keymap.set("v", "p", [["_dhp]])
+vim.keymap.set("v", "P", [["_DP]])
 
 -- flash.nvim conflicting with this key
 -- vim.keymap.set("n", ";", ":")
 
-
+-- Footnotes
 -- Use [[ ]] for raw strings, not escaping (instead of "")
 --
 -- To define a mapping which will not be echoed on the command line, add
@@ -632,51 +754,14 @@ vim.keymap.set({"n", "v"}, "C", [["_C]])
 -- s  Select mode map. Defined using ':smap' or ':snoremap'.
 -- c  Command-line mode map. Defined using ':cmap' or ':cnoremap'.
 -- o  Operator pending mode map. Defined using ':omap' or ':onoremap'.
-
--- open explorer vs-*bleep* style
-vim.keymap.set("n", "<C-b>", vim.cmd.Ex)
-
--- move line with appropriate indentation
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
-
--- [J]oin line without jumping cursor all the way to the right
-vim.keymap.set("n", "J", "mzJ`z")
-
--- center when jumping around
--- just bind it to 20j/k to avoid mucking with % compute 
-vim.keymap.set("n", "<C-d>", "20jzz")
-vim.keymap.set("n", "<C-u>", "20kzz")
-vim.keymap.set("n", "n", "nzzzv")
-vim.keymap.set("n", "N", "Nzzzv")
-
---There are 9 types of registers:			*registers* *E354*
+--
+-- There are 9 types of registers:			*registers* *E354*
 -- 1. The unnamed register ""
 -- 2. 10 numbered registers "0 to "9
 -- 3. The small delete register "-
 -- 4. 26 named registers "a to "z or "A to "Z
 -- 5. four read-only registers ":, "., "% and "#
 -- 6. the expression register "=
--- 7. The selection and drop registers "*, "+ and "~ 
+-- 7. The selection and drop registers "*, "+ and "~
 -- 8. The black hole register "_
 -- 9. Last search pattern register "/ -- useful for capture and replace
-
--- system clipboard
--- yank
-vim.keymap.set({"n", "v"}, "<leader>y", [["+y]])
-vim.keymap.set("n", "<leader>Y", [["+Y]])
--- paste
-vim.keymap.set({"n", "v"}, "<leader>pv", [["+p]])
-vim.keymap.set("n", "<leader>Pv", [["+P]])
-vim.keymap.set("n", "<leader>PV", [["+P]])
-
--- skip buffer actions
-vim.keymap.set("v", "<leader>p", [["_dP]]) -- paste
-vim.keymap.set({"n", "v"}, "<leader>d", [["_d]]) -- delete
--- don't yank on change
-vim.keymap.set({"n", "v"}, "c", [["_c]])
-vim.keymap.set({"n", "v"}, "C", [["_C]])
-
--- flash.nvim conflicting with this key
--- vim.keymap.set("n", ";", ":")
-
