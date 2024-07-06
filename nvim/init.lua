@@ -58,6 +58,11 @@ vim.o.breakindent = true
 -- The completion menu is controlled by completeopt.
 vim.o.completeopt = 'menuone,noselect'
 
+-- vim.o.listchars='tab:▷ ,trail:·,extends:◣,precedes:◢,nbsp:○'     
+-- vim.o.listchars='eol:↵,trail:~,tab:>-,nbsp:␣'    
+
+
+
 -- :h lua-high
 local ag = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
@@ -116,7 +121,6 @@ vim.opt.rtp:prepend(lazypath)
 --  You can also configure plugins after the setup call,
 --    as they will be available in your neovim runtime.
 require('lazy').setup({
-  -- post kickstart plugins START
   {
     "kylechui/nvim-surround",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
@@ -225,7 +229,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',  opts = {} },
+  { 'folke/which-key.nvim', opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -288,13 +292,40 @@ require('lazy').setup({
     },
   },
 
+  { 'rainbow-delimiters' },
   {
-    -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help indent_blankline.txt`
-    main = 'ibl',
-    opts = {},
+    lazy = false,
+    event = { 'BufNewFile', 'BufReadPre' },
+    config = function()
+      local highlight = {
+        "RainbowRed",
+        "RainbowYellow",
+        "RainbowBlue",
+        "RainbowOrange",
+        "RainbowGreen",
+        "RainbowViolet",
+        "RainbowCyan",
+      }
+
+      local hooks = require "ibl.hooks"
+      -- create the highlight groups in the highlight setup hook, so they are reset
+      -- every time the colorscheme changes
+      --
+      -- for i, color in pairs({ '#662121', '#767621', '#216631', '#325a5e', '#324b7b', '#562155' }) do
+
+      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+        vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+        vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+        vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+        vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+        vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+        vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+        vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+      end)
+
+      require("ibl").setup { indent = { highlight = highlight } }
+    end,
   },
 
   -- "gc" to comment visual regions/lines
